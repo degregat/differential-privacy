@@ -17,6 +17,8 @@ package(
     default_visibility = ["//visibility:public"],
 )
 
+load("//algorithms:cc_static_lib.bzl", "cc_static_library")
+
 cc_library(
     name = "algorithm",
     hdrs = ["algorithm.h"],
@@ -417,6 +419,43 @@ cc_test(
         ":numerical-mechanisms-testing",
         "@com_google_googletest//:gtest_main",
     ],
+)
+
+cc_library(
+    name = "int-scale-gaussian",
+    hdrs = ["int-scale-gaussian.h"],
+    srcs = ["int-scale-gaussian.cc"],
+    linkstatic = True,
+    deps = [
+	":distributions",
+    ],
+)
+
+cc_test(
+    name = "int-scale-gaussian_test",
+    size = "small",
+    srcs = ["int-scale-gaussian_test.cc"],
+    deps = [
+    	":rand",
+	":int-scale-gaussian",
+        "//base/testing:status_matchers",
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+cc_library(
+    name = "int-scale-gaussian-c-shared",
+    hdrs = ["int-scale-gaussian-c.h"],
+    srcs = ["int-scale-gaussian-c.cc"],
+    linkstatic = True,
+    deps = [
+	":int-scale-gaussian",
+    ],
+)
+
+cc_static_library(
+    name = "libint-scale-gaussian-c",
+    dep =  "int-scale-gaussian-c-shared",
 )
 
 cc_library(
